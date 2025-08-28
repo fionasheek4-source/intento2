@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resultados</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto py-8">
+    <h2 class="text-3xl font-bold mb-6 text-[#0b3a53] text-center">Resultados</h2>
+    <div id="charts" class="grid grid-cols-1 md:grid-cols-1 gap-8"></div>
+  </div>
+
+  <script>
+    // Paleta de colores Essenza Market
+    const palette = [
+      '#142143', // azul oscuro
+      '#2563eb', // azul medio
+      '#3b82f6', // azul claro
+      '#f59e36', // naranja
+      '#ffaf00', // amarillo
+      '#f97316', // naranja fuerte
+      '#14b8a6', // verde azulado
+      '#22d3ee'  // azul aqua
+    ];
+
+    // Simulación de datos (reemplazar con fetch real si se tiene API)
+    const mockData = [
+      {
+        section_name: "Sección A",
+        candidates: [
+          { candidate_name: "Candidato 1", votes: 12 },
+          { candidate_name: "Candidato 2", votes: 8 },
+          { candidate_name: "Candidato 3", votes: 5 }
+        ]
+      },
+      {
+        section_name: "Sección B",
+        candidates: [
+          { candidate_name: "Candidato 4", votes: 15 },
+          { candidate_name: "Candidato 5", votes: 20 }
+        ]
+      }
+    ];
+
+    async function fetchAndRender() {
+      // En HTML puro usamos mockData, si hay API, reemplazar por fetch:
+      const data = mockData; // fetch('results_api.php').then(r => r.json());
+
+      const chartsDiv = document.getElementById('charts');
+      chartsDiv.innerHTML = '';
+      data.forEach((section, idx) => {
+        const canvasId = 'chart-' + idx;
+        const block = document.createElement('div');
+        block.className = 'bg-white p-6 rounded shadow hover:shadow-lg transition transform hover:-translate-y-1';
+        block.innerHTML = `<h3 class="text-xl font-semibold mb-4 text-[#0b3a53]">${section.section_name}</h3><canvas id="${canvasId}" height="120"></canvas>`;
+        chartsDiv.appendChild(block);
+
+        const labels = section.candidates.map(c => c.candidate_name);
+        const values = section.candidates.map(c => parseInt(c.votes));
+        const colors = labels.map((_, i) => palette[i % palette.length]);
+
+        new Chart(document.getElementById(canvasId), {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Votos',
+              data: values,
+              backgroundColor: colors,
+              borderColor: colors.map(c => c),
+              borderWidth: 2,
+              hoverOffset: 10
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: { mode: 'index', intersect: false }
+            },
+            scales: {
+              y: { beginAtZero: true, ticks: { precision:0 } },
+              x: { ticks: { color: '#0b3a53', font: { weight: 'bold' } } }
+            },
+            animation: { duration: 1000, easing: 'easeOutQuart' }
+          }
+        });
+      });
+    }
+
+    // Refrescar cada 5 segundos
+    fetchAndRender();
+    setInterval(fetchAndRender, 5000);
+  </script>
+</body>
+</html>

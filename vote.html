@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Votar</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+
+<style>
+  /* Tarjetas con efecto flotante */
+  .candidate-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    transition: all 0.35s ease;
+    box-shadow: 0 6px 14px rgba(11,58,83,0.12);
+    border: 1px solid rgba(11,58,83,0.08);
+    transform: translateY(0);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    animation: floaty 5s ease-in-out infinite;
+  }
+
+  .candidate-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(11,58,83,0.25), 0 0 20px rgba(59,130,246,0.15);
+  }
+
+  @keyframes floaty {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+  }
+
+  /* Imagen circular arriba */
+  .candidate-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 0.75rem auto;
+    box-shadow: 0 6px 14px rgba(11,58,83,0.2);
+    border: 3px solid rgba(59,130,246,0.3);
+    display: block;
+  }
+
+  .candidate-name {
+    font-weight: 700;
+    color: #0b3a53;
+    font-size: 1.1rem;
+  }
+
+  /* Bio oculta desplegable */
+  .candidate-bio {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+    text-align: left;
+  }
+
+  .candidate-card.open .candidate-bio {
+    max-height: 200px;
+    opacity: 1;
+  }
+
+  .candidate-select {
+    accent-color: #0b3a53;
+    transform: scale(1.2);
+    margin-right: 0.4rem;
+  }
+
+  /* Fondo fijo azul oscuro */
+  body {
+    background: #142143;
+    min-height: 100vh;
+  }
+</style>
+</head>
+<body>
+  <div class="container mx-auto py-8 px-6">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-3xl font-bold text-white text-center w-full">Panel de Votación</h2>
+      <div class="absolute right-6 top-6 flex gap-3">
+        <a href="results.html" class="px-4 py-2 border bg-white text-[#0b3a53] rounded shadow">Resultados</a>
+        <a href="logout.html" class="px-4 py-2 bg-[#f59e36] text-white rounded shadow">Salir</a>
+      </div>
+    </div>
+
+    <form id="voteForm">
+      <!-- Sección 1 -->
+      <section class="mb-8 p-6 rounded shadow" style="background:#ffaf00;">
+        <div class="bg-white p-6 rounded shadow">
+          <h3 class="text-xl font-semibold mb-4 text-[#0b3a53]">Presidencia</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            
+            <label class="candidate-card">
+              <img src="https://randomuser.me/api/portraits/men/11.jpg" alt="" class="candidate-photo">
+              <div class="candidate-name">Carlos López</div>
+              <div class="candidate-bio">Estudiante de ingeniería, con pasión por la innovación y liderazgo juvenil.</div>
+              <div class="mt-4 flex items-center justify-center">
+                <input type="radio" class="candidate-select" name="choice[1]" value="1" required>
+                <span class="text-sm">Seleccionar</span>
+              </div>
+            </label>
+
+            <label class="candidate-card">
+              <img src="https://randomuser.me/api/portraits/women/21.jpg" alt="" class="candidate-photo">
+              <div class="candidate-name">María Fernández</div>
+              <div class="candidate-bio">Comprometida con el cambio social y la representación de los estudiantes.</div>
+              <div class="mt-4 flex items-center justify-center">
+                <input type="radio" class="candidate-select" name="choice[1]" value="2" required>
+                <span class="text-sm">Seleccionar</span>
+              </div>
+            </label>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Sección 2 -->
+      <section class="mb-8 p-6 rounded shadow" style="background:#ffaf00;">
+        <div class="bg-white p-6 rounded shadow">
+          <h3 class="text-xl font-semibold mb-4 text-[#0b3a53]">Secretaría</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            
+            <label class="candidate-card">
+              <img src="https://randomuser.me/api/portraits/men/31.jpg" alt="" class="candidate-photo">
+              <div class="candidate-name">Jorge Martínez</div>
+              <div class="candidate-bio">Enfocado en la organización y en dar voz a todos los estudiantes.</div>
+              <div class="mt-4 flex items-center justify-center">
+                <input type="radio" class="candidate-select" name="choice[2]" value="3" required>
+                <span class="text-sm">Seleccionar</span>
+              </div>
+            </label>
+
+            <label class="candidate-card">
+              <img src="https://randomuser.me/api/portraits/women/41.jpg" alt="" class="candidate-photo">
+              <div class="candidate-name">Ana Torres</div>
+              <div class="candidate-bio">Apasionada por la transparencia y la mejora de la comunicación estudiantil.</div>
+              <div class="mt-4 flex items-center justify-center">
+                <input type="radio" class="candidate-select" name="choice[2]" value="4" required>
+                <span class="text-sm">Seleccionar</span>
+              </div>
+            </label>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Botón -->
+      <div class="flex justify-center">
+        <button id="confirmBtn" type="button" class="px-8 py-3 bg-[#0b3a53] text-white rounded shadow-lg">Confirmar Voto</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Modal -->
+  <div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+    <div class="bg-white p-6 rounded w-11/12 md:w-2/3">
+      <h4 class="text-lg font-bold mb-3">Resumen de tu votación</h4>
+      <div id="summary"></div>
+      <div class="mt-4 text-right">
+        <button id="modalCancel" class="px-4 py-2 border rounded mr-2">Cancelar</button>
+        <button id="modalSubmit" class="px-4 py-2 bg-[#f59e36] text-white rounded">Confirmar y Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Abrir/cerrar descripción al hacer click en la tarjeta
+    document.querySelectorAll('.candidate-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if(e.target.tagName.toLowerCase() === 'input') return;
+        card.classList.toggle('open');
+      });
+    });
+
+    const confirmBtn = document.getElementById('confirmBtn');
+    const modal = document.getElementById('confirmModal');
+    const summary = document.getElementById('summary');
+    const modalCancel = document.getElementById('modalCancel');
+    const modalSubmit = document.getElementById('modalSubmit');
+
+    confirmBtn.addEventListener('click', () => {
+      const form = document.getElementById('voteForm');
+      const fd = new FormData(form);
+      let html = '<ul class="space-y-2">';
+      for (let pair of fd.entries()) {
+        const k = pair[0];
+        const v = pair[1];
+        if (k.startsWith('choice')) {
+          let sid = k.match(/\d+/)[0];
+          html += `<li>Sección ${sid}: candidato ID ${v}</li>`;
+        }
+      }
+      html += '</ul>';
+      summary.innerHTML = html;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    });
+
+    modalCancel.addEventListener('click', () => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    });
+
+    modalSubmit.addEventListener('click', async () => {
+      modalSubmit.disabled = true;
+      modalSubmit.textContent = 'Enviando...';
+
+      setTimeout(() => {
+        alert("✅ Voto enviado con éxito (simulación).");
+        modalSubmit.disabled = false;
+        modalSubmit.textContent = 'Confirmar y Enviar';
+        modal.classList.add('hidden');
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
